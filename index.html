@@ -69,39 +69,82 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button onclick="console.log('Console Log')">Console Log</button>
+      <button onclick="console.error('Console Error')">Console Error</button>
+      <button onclick="console.count('Console Count')">Console Count</button>
+      <button onclick="console.warn('Console Warn')">Console Warn</button>
+      <button onclick="console.assert(false, 'Console Assert')">Console Assert</button>
+      <button onclick="console.clear()">Console Clear</button>
+      <button onclick="console.dir(document.head)">Console Dir</button>
+      <button onclick="console.dirxml(document)">Console dirxml</button>
+      <button onclick="console.group('Console Group')">Console Group Start</button>
+      <button onclick="console.groupEnd('Console Group')">Console Group End</button>
+      <button onclick="console.table([
+          {
+            first: 'René',
+            last: 'Magritte',
+          },
+          {
+            first: 'Chaim',
+            last: 'Soutine',
+            birthday: '18930113',
+          },
+          {
+            first: 'Henri',
+            last: 'Matisse',
+          }
+        ])">Console Table</button>
+      <button onclick="console.time('Timer')">Start Timer</button>
+      <button onclick="console.timeEnd('Timer')">End Timer</button>
+      <button onclick="console.trace()">Console Trace</button>
+      <button onclick="globalErrorTrigger()">Trigger a Global Error</button>
     </section>
   </main>
 
   <script>
+    class GlobalError extends Error {
+      constructor(message) {
+        super(message); // (1)
+        this.out = "Global Error"; // (2)
+      }
+    }
+
     let form = document.querySelector('form');
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
-    });
+    
+      form.addEventListener('submit', e => {
+        try {
+          e.preventDefault();
+          let output = document.querySelector('output');
+          let firstNum = document.querySelector('#first-num').value;
+          let secondNum = document.querySelector('#second-num').value;
+          let operator = document.querySelector('#operator').value;
+          output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+        } catch (err) {
+          console.log('Please enter valid numbers')
+        }
+      });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    function globalErrorTrigger() {
+      throw new GlobalError("Wah");
+    }
+
+    
+
+    if (window.onerror) {
+      console.log("Triggered window.onerror")
+    }
+  </script>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "8d3b6ba6742d4633bb8296944c7099c0"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+    TrackJS.track('Testing TrackJS!');
   </script>
 </body>
 
